@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import Navbar from "./components/Navbar";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -9,6 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  title: "Reflex — Retailer Operations",
+  description: "Team workspace for the Readiness Sprint retailer dashboard.",
   title: "Reflex - Delivery Management",
   description: "A delivery tracking system for retailers",
 };
@@ -19,6 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <Navbar />
     <html lang="en">
       <body className={inter.className}>
         {children}
