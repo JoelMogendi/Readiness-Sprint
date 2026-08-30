@@ -1,0 +1,38 @@
+[
+  {
+    "id": "RFX-001",
+    "customerName": "Brian Mwangi",
+    "customerPhone": "0712345678",
+    "address": "Thika Road, Nairobi",
+    "itemDescription": "Samsung Galaxy A15",
+    "status": "DELIVERED",
+    "riderId": "rider-001"
+  },
+  {
+    "id": "RFX-002",
+    "customerName": "Mary Wanjiku",
+    "customerPhone": "0723456789",
+    "address": "Juja, Kiambu",
+    "itemDescription": "HP Laptop",
+    "status": "DELIVERED",
+    "riderId": "rider-001"
+  },
+  {
+    "id": "RFX-003",
+    "customerName": "David Kamau",
+    "customerPhone": "0734567890",
+    "address": "Ruiru, Kiambu",
+    "itemDescription": "Power Drill",
+    "status": "DELIVERED",
+    "riderId": "rider-001"
+  },
+  {
+    "id": "RFX-004",
+    "customerName": "Grace Njeri",
+    "customerPhone": "0745678901",
+    "address": "Kahawa Sukari, Kiambu",
+    "itemDescription": "Wireless Router",
+    "status": "DELIVERED",
+    "riderId": "rider-001"
+  }
+]
