@@ -57,48 +57,50 @@ export function DeliveryForm({ onClose }: DeliveryFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
-      <h2 className="text-2xl font-bold mb-4">📦 New Delivery Request</h2>
+    <div className="w-full">
+      <h2 className="text-xl font-semibold mb-6 text-zinc-100">📦 New Delivery Request</h2>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
-          ❌ {error}
+        <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg mb-6 text-sm">
+          {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            Customer Name *
-          </label>
-          <input
-            type="text"
-            name="customerName"
-            value={form.customerName}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="e.g., Irene Dzingai"
-            required
-          />
+        <div className="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-zinc-400">
+              Customer Name *
+            </label>
+            <input
+              type="text"
+              name="customerName"
+              value={form.customerName}
+              onChange={handleChange}
+              className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-zinc-100 transition-all"
+              placeholder="e.g., Irene Dzingai"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1 text-zinc-400">
+              Customer Phone *
+            </label>
+            <input
+              type="tel"
+              name="customerPhone"
+              value={form.customerPhone}
+              onChange={handleChange}
+              className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-zinc-100 transition-all"
+              placeholder="e.g., 0774248564"
+              required
+            />
+          </div>
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1 text-gray-700">
-            Customer Phone *
-          </label>
-          <input
-            type="tel"
-            name="customerPhone"
-            value={form.customerPhone}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="e.g., 0774248564"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1 text-gray-700">
+          <label className="block text-sm font-medium mb-1 text-zinc-400">
             Delivery Address *
           </label>
           <input
@@ -106,14 +108,14 @@ export function DeliveryForm({ onClose }: DeliveryFormProps) {
             name="customerAddress"
             value={form.customerAddress}
             onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-zinc-100 transition-all"
             placeholder="e.g., Harare CBD, Zimbabwe"
             required
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1 text-gray-700">
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-1 text-zinc-400">
             Item Description *
           </label>
           <textarea
@@ -121,7 +123,7 @@ export function DeliveryForm({ onClose }: DeliveryFormProps) {
             value={form.itemDescription}
             onChange={handleChange}
             rows={3}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-zinc-100 transition-all resize-none"
             placeholder="Describe the item being delivered..."
             required
           />
@@ -131,15 +133,15 @@ export function DeliveryForm({ onClose }: DeliveryFormProps) {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-zinc-50 text-zinc-950 font-medium py-3 rounded-lg hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating...' : '📤 Schedule Delivery'}
+            {loading ? 'Creating...' : 'Schedule Delivery'}
           </button>
           {onClose && (
             <button
               type="button"
               onClick={onClose}
-              className="px-4 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              className="px-6 bg-zinc-800 text-zinc-300 font-medium py-3 rounded-lg hover:bg-zinc-700 transition-colors"
             >
               Cancel
             </button>

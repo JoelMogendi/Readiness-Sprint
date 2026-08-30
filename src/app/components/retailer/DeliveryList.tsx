@@ -5,9 +5,9 @@ export function DeliveryList({ deliveries }: { deliveries: Delivery[] }) {
   return (
     <div className="space-y-4">
       {deliveries.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
-          No deliveries scheduled yet.
-        </p>
+        <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/50 p-12 text-center text-zinc-500">
+          <p className="text-lg">No deliveries found.</p>
+        </div>
       ) : (
         deliveries.map((delivery) => (
           <DeliveryCard key={delivery.id} delivery={delivery} />

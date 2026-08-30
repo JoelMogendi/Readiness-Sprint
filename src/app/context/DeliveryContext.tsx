@@ -8,8 +8,8 @@ import React, {
   useCallback,
   type ReactNode,
 } from "react";
-import { apiClient } from "../lib/api";
-import { socketService } from "../lib/socket";
+import { apiClient } from "../../lib/api";
+import { socketService } from "../../lib/socket";
 import type { Delivery, DeliveryInput } from "../types";
 
 type DeliveryContextValue = {
@@ -31,10 +31,11 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [retailerId, setRetailerId] = useState<string | null>(null);
 
-  // Get retailer ID from localStorage
+  // Get retailer ID from localStorage (no window check needed in useEffect)
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setRetailerId(localStorage.getItem("userId"));
+    const storedId = localStorage.getItem("userId");
+    if (storedId) {
+      setRetailerId(storedId);
     }
   }, []);
 
@@ -59,7 +60,7 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
     async (data: DeliveryInput) => {
       try {
         const newDelivery = await apiClient.createDelivery(data);
-        setDeliveries((prev) => [newDelivery, ...prev]);
+        setDeliveries((prev : Delivery[]) => [newDelivery, ...prev]);
         return newDelivery;
       } catch (err) {
         setError(
@@ -71,26 +72,30 @@ export function DeliveryProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  // Update a single delivery (for real-time updates)
+  // Update a single delivery
   const updateDelivery = useCallback((updatedDelivery: Delivery) => {
     setDeliveries((prev) =>
       prev.map((d) => (d.id === updatedDelivery.id ? updatedDelivery : d))
     );
   }, []);
 
-  // Set up WebSocket connection
+  // Live socket updates are optional. Only initialize when a real socket backend exists.
   useEffect(() => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token = localStorage.getItem("token");
+    const socketEnabled = Boolean(process.env.NEXT_PUBLIC_SOCKET_URL);
+    let isConnected = false;
 
-    if (token && retailerId) {
+    if (socketEnabled && token && retailerId) {
       socketService.connect(token);
       socketService.subscribeToRetailerDeliveries(retailerId, updateDelivery);
+      isConnected = true;
     }
 
     return () => {
-      socketService.unsubscribe();
-      socketService.disconnect();
+      if (isConnected) {
+        socketService.unsubscribe();
+        socketService.disconnect();
+      }
     };
   }, [retailerId, updateDelivery]);
 
