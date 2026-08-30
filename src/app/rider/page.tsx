@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 
 type DeliveryStatus =
-  | "ASSIGNED"
-  | "PICKED_UP"
+  | "SCHEDULED"
+  | "IN_TRANSIT"
   | "DELIVERED";
 
 type Delivery = {
@@ -16,25 +16,16 @@ type Delivery = {
   status: DeliveryStatus;
 };
 
-const statusLabels: Record<
-  DeliveryStatus,
-  string
-> = {
-  ASSIGNED: "Assigned",
-  PICKED_UP: "Picked Up",
+const statusLabels: Record<DeliveryStatus, string> = {
+  SCHEDULED: "Scheduled",
+  IN_TRANSIT: "In Transit",
   DELIVERED: "Delivered",
 };
 
 export default function RiderPage() {
-  const [deliveries, setDeliveries] = useState<
-    Delivery[]
-  >([]);
-
+  const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const [updatingId, setUpdatingId] =
-    useState<string | null>(null);
-
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   async function loadDeliveries() {
@@ -42,24 +33,22 @@ export default function RiderPage() {
       setLoading(true);
       setError("");
 
-      const response = await fetch(
-        "/api/rider/deliveries"
-      );
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/rider/deliveries", {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to load deliveries"
-        );
+        throw new Error("Failed to load deliveries");
       }
 
       const data = await response.json();
-
-      setDeliveries(data.deliveries ?? []);
+      setDeliveries(data ?? []);
     } catch (error) {
       console.error(error);
-      setError(
-        "Unable to load your deliveries."
-      );
+      setError("Unable to load your deliveries.");
     } finally {
       setLoading(false);
     }
@@ -69,82 +58,58 @@ export default function RiderPage() {
     loadDeliveries();
   }, []);
 
-  async function updateStatus(
-    id: string,
-    nextStatus: DeliveryStatus
-  ) {
+  async function updateStatus(id: string, nextStatus: DeliveryStatus) {
     try {
       setUpdatingId(id);
       setError("");
 
-      const response = await fetch(
-        `/api/rider/deliveries/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            status: nextStatus,
-          }),
-        }
-      );
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/rider/deliveries/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ status: nextStatus }),
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error ||
-            "Unable to update status"
-        );
+        throw new Error(data.error || "Unable to update status");
       }
 
       setDeliveries((current) =>
         current.map((delivery) =>
-          delivery.id === id
-            ? {
-                ...delivery,
-                status: nextStatus,
-              }
-            : delivery
+          delivery.id === id ? { ...delivery, status: nextStatus } : delivery
         )
       );
     } catch (error) {
       console.error(error);
-
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Unable to update delivery."
-      );
+      setError(error instanceof Error ? error.message : "Unable to update delivery.");
     } finally {
       setUpdatingId(null);
     }
   }
 
-  function getNextStatus(
-    status: DeliveryStatus
-  ) {
-    if (status === "ASSIGNED") {
-      return "PICKED_UP";
+  function getNextStatus(status: DeliveryStatus) {
+    if (status === "SCHEDULED") {
+      return "IN_TRANSIT";
     }
 
-    if (status === "PICKED_UP") {
+    if (status === "IN_TRANSIT") {
       return "DELIVERED";
     }
 
     return null;
   }
 
-  function getButtonText(
-    status: DeliveryStatus
-  ) {
-    if (status === "ASSIGNED") {
-      return "Mark as Picked Up";
+  function getButtonText(status: DeliveryStatus) {
+    if (status === "SCHEDULED") {
+      return "Mark as In Transit";
     }
 
-    if (status === "PICKED_UP") {
+    if (status === "IN_TRANSIT") {
       return "Mark as Delivered";
     }
 
@@ -279,20 +244,14 @@ export default function RiderPage() {
 
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          delivery.status ===
-                          "ASSIGNED"
+                          delivery.status === "SCHEDULED"
                             ? "bg-yellow-100 text-yellow-800"
-                            : delivery.status ===
-                              "PICKED_UP"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
+                            : delivery.status === "IN_TRANSIT"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-green-100 text-green-800"
                         }`}
                       >
-                        {
-                          statusLabels[
-                            delivery.status
-                          ]
-                        }
+                        {statusLabels[delivery.status]}
                       </span>
                     </div>
 

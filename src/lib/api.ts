@@ -1,32 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import type { Delivery, DeliveryInput } from '../app/types';
 
-export interface Delivery {
-  id: string;
-  customerName: string;
-  customerPhone: string;
-  customerAddress: string;
-  itemDescription: string;
-  status: 'pending' | 'assigned' | 'picked_up' | 'delivered';
-  retailerId: string;
-  dispatcherId?: string;
-  riderId?: string;
-  rider?: {
-    id: string;
-    name: string;
-  };
-  assignedAt?: string;
-  pickedUpAt?: string;
-  deliveredAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface DeliveryInput {
-  customerName: string;
-  customerPhone: string;
-  customerAddress: string;
-  itemDescription: string;
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL !== 'http://localhost:5000'
+  ? process.env.NEXT_PUBLIC_API_URL
+  : '';
 
 class ApiClient {
   private token: string | null = null;
@@ -65,7 +41,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = API_BASE_URL ? `${API_BASE_URL}${endpoint}` : endpoint;
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -76,33 +52,38 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `API Error: ${response.status}`);
+      throw new Error(errorData.message || errorData.error || `API Error: ${response.status}`);
     }
 
     return response.json();
   }
 
-  // Get all deliveries for the retailer
   async getDeliveries(): Promise<Delivery[]> {
-    return this.request('/deliveries/retailer');
+    return this.request('/api/deliveries');
   }
 
-  // Create a new delivery
   async createDelivery(data: DeliveryInput): Promise<Delivery> {
-    return this.request('/deliveries', {
+    return this.request('/api/deliveries', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
-  // Get a single delivery
   async getDelivery(id: string): Promise<Delivery> {
-    return this.request(`/deliveries/${id}`);
+    return this.request(`/api/deliveries/${id}`);
+  }
+
+  async getRiders(): Promise<{ _id: string; name: string; email: string }[]> {
+    return this.request('/api/users/riders');
+  }
+
+  async updateDelivery(id: string, data: Partial<Delivery>): Promise<Delivery> {
+    return this.request(`/api/deliveries/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
   }
 }
 
-// Export the client instance
 export const apiClient = new ApiClient();
-
-// Also export the class for testing if needed
 export { ApiClient };

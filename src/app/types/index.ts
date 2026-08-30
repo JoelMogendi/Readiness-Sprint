@@ -1,4 +1,4 @@
-export type DeliveryStatus = 'pending' | 'assigned' | 'picked_up' | 'delivered';
+export type DeliveryStatus = 'IN_TRANSIT' | 'SCHEDULED' | 'DELAYED' | 'DELIVERED';
 
 export interface Delivery {
   id: string;
