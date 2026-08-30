@@ -10,6 +10,9 @@ export default function Navbar() {
         <Link href="/" className="hover:text-zinc-100 transition-colors">
           Home
         </Link>
+        <Link href="/login" className="hover:text-zinc-100 transition-colors">
+          Retailer Dashboard
+        </Link>
         <Link href="/scanner" className="hover:text-zinc-100 transition-colors">
           Sync + Scanning
         </Link>

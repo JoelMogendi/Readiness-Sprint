@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { CheckCircle2, Truck, X } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 import Scanner from "./components/Scanner";
 import OrderCard from "./components/OrderCard";
 import type { Order } from "./types";
@@ -18,11 +17,6 @@ export default function ScannerPage() {
 
   return (
     <main className="sync-page">
-      <header className="sync-nav">
-        <Link href="/" className="sync-brand"><Truck size={18} /> Reflex <span>/ Sync + Scanning</span></Link>
-        <span className="online"><i /> system online</span>
-      </header>
-
       <section className="sync-hero">
         <div>
           <p>RIDER WORKSPACE</p>
@@ -43,7 +37,7 @@ export default function ScannerPage() {
           <div className="empty-order">
             <div>02</div>
             <h2>No delivery selected</h2>
-            <p>Scan a package or enter an order code to retrieve the rider's assigned delivery.</p>
+            <p>Scan a package or enter an order code to retrieve the rider&apos;s assigned delivery.</p>
           </div>
         )}
       </section>

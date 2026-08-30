@@ -68,12 +68,12 @@ export default function OrderCard({
         <div className="avatar">{order.customerName[0]}</div>
         <div>
           <strong>{order.customerName}</strong>
-          <a href={`tel:${order.phone}`}><Phone size={12} /> {order.phone}</a>
+          <a href={`tel:${order.customerPhone}`}><Phone size={12} /> {order.customerPhone}</a>
         </div>
       </div>
 
       <div className="facts">
-        <div><MapPin size={16} /> {order.address}</div>
+        <div><MapPin size={16} /> {order.customerAddress}</div>
         <div><Package size={16} /> {order.itemDescription}</div>
       </div>
 

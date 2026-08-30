@@ -11,15 +11,22 @@ export default function Home() {
           Retailer operations
         </h1>
         <p className="text-zinc-400 leading-relaxed">
-          Team workspace. The Sync + Scanning rider flow is available as a
-          separate feature route.
+          Team workspace for the Readiness Sprint retailer dashboard.
         </p>
-        <Link
-          href="/scanner"
-          className="inline-flex mt-6 px-4 py-3 border border-zinc-700 rounded-lg text-zinc-100 hover:bg-zinc-900 transition-colors"
-        >
-          Open Sync + Scanning →
-        </Link>
+        <div className="flex gap-3 mt-6">
+          <Link
+            href="/login"
+            className="inline-flex px-4 py-3 bg-zinc-50 text-zinc-950 rounded-lg font-medium hover:bg-zinc-200 transition-colors"
+          >
+            Open Retailer Dashboard →
+          </Link>
+          <Link
+            href="/scanner"
+            className="inline-flex px-4 py-3 border border-zinc-700 rounded-lg text-zinc-100 hover:bg-zinc-900 transition-colors"
+          >
+            Open Sync + Scanning →
+          </Link>
+        </div>
       </section>
     </main>
   );
