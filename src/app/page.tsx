@@ -30,4 +30,8 @@ export default function Home() {
       </section>
     </main>
   );
+import { redirect } from "next/navigation";
+
+export default function Page() {
+  redirect("/login");
 }
