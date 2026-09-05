@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { apiRequest, getAuthToken } from '../../../lib/api-client';
 
 interface Delivery {
   id: string;
@@ -10,8 +11,6 @@ interface Delivery {
   itemDescription: string;
   status: string;
   riderId: string | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 interface Rider {
@@ -21,7 +20,6 @@ interface Rider {
 }
 
 export default function DispatcherDashboard() {
-  // State declarations
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,22 +31,25 @@ export default function DispatcherDashboard() {
     { id: 'rider-003', name: 'Simbarashe Mupfumira', active: true },
   ];
 
+  // Check if user is logged in
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      console.log('🔴 No token found, redirecting to login');
+      window.location.href = '/login';
+    } else {
+      console.log('🟢 Token found');
+    }
+  }, []);
+
   // Fetch deliveries from API
   const fetchDeliveries = async () => {
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/deliveries', {
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : '',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch deliveries');
-      }
-      const data = await response.json();
+      console.log('📤 Fetching deliveries...');
+      const data = await apiRequest<Delivery[]>('/api/deliveries');
+      console.log('✅ Deliveries fetched:', data);
       setDeliveries(data);
     } catch (error) {
       console.error('❌ Error fetching deliveries:', error);
@@ -70,37 +71,31 @@ export default function DispatcherDashboard() {
       return;
     }
 
+    // Check for token before making request
+    const token = getAuthToken();
+    if (!token) {
+      alert('You must be logged in to assign riders');
+      window.location.href = '/login';
+      return;
+    }
+
     setLoading(true);
     setError(null);
     
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        throw new Error('You must be logged in');
-      }
-
       console.log(`📤 Assigning rider ${riderId} to delivery ${deliveryId}`);
-      
-      const response = await fetch(`/api/deliveries/${deliveryId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          riderId: riderId,
-          status: 'assigned'
-        }),
-      });
+      console.log(`🔑 Token exists: ${!!token}`);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error('❌ API Error:', data);
-        throw new Error(data.error || 'Failed to assign rider');
-      }
+      const data = await apiRequest<{ message: string; delivery: Delivery }>(
+        `/api/deliveries/${deliveryId}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            riderId: riderId,
+            status: 'assigned'
+          }),
+        }
+      );
 
       console.log('✅ Rider assigned:', data);
       alert(`✅ Rider assigned successfully!`);
@@ -109,18 +104,21 @@ export default function DispatcherDashboard() {
       await fetchDeliveries();
     } catch (error) {
       console.error('❌ Failed to assign rider:', error);
-      setError(error instanceof Error ? error.message : 'Failed to assign rider');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to assign rider';
+      setError(errorMessage);
+      alert(`❌ ${errorMessage}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // Filter pending deliveries (not yet assigned)
-  const pendingDeliveries = deliveries.filter(d => d.status === 'pending' || d.status === 'scheduled');
+  // Filter pending deliveries
+  const pendingDeliveries = deliveries.filter(d => 
+    d.status === 'pending' || d.status === 'scheduled'
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -131,14 +129,14 @@ export default function DispatcherDashboard() {
             <button
               onClick={fetchDeliveries}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+              disabled={loading}
             >
-              🔄 Refresh
+              {loading ? 'Loading...' : '🔄 Refresh'}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
