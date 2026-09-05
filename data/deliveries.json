@@ -1,0 +1,56 @@
+[
+  {
+    "id": "DEL-001",
+    "customerName": "Irene Dzingai",
+    "customerPhone": "0774248564",
+    "customerAddress": "Harare CBD, Zimbabwe",
+    "itemDescription": "Laptop - Dell XPS 13",
+    "status": "assigned",
+    "retailerId": "retailer-001",
+    "riderId": "rider-001",
+    "rider": {
+      "id": "rider-001",
+      "name": "Takudzwa Moyo"
+    },
+    "assignedAt": "2026-08-30T09:00:00Z",
+    "createdAt": "2026-08-30T08:00:00Z",
+    "updatedAt": "2026-08-30T09:00:00Z"
+  },
+  {
+    "id": "DEL-002",
+    "customerName": "Tendai Mukundu",
+    "customerPhone": "0774123456",
+    "customerAddress": "Mbare, Harare, Zimbabwe",
+    "itemDescription": "Groceries - Weekly Family Pack",
+    "status": "picked_up",
+    "retailerId": "retailer-001",
+    "riderId": "rider-002",
+    "rider": {
+      "id": "rider-002",
+      "name": "Chengetai Mupanduki"
+    },
+    "assignedAt": "2026-08-30T08:00:00Z",
+    "pickedUpAt": "2026-08-30T08:45:00Z",
+    "createdAt": "2026-08-30T07:00:00Z",
+    "updatedAt": "2026-08-30T08:45:00Z"
+  },
+  {
+    "id": "DEL-003",
+    "customerName": "Ruvarashe Machingura",
+    "customerPhone": "0774987654",
+    "customerAddress": "Belvedere, Harare, Zimbabwe",
+    "itemDescription": "Books - University Textbooks",
+    "status": "delivered",
+    "retailerId": "retailer-001",
+    "riderId": "rider-003",
+    "rider": {
+      "id": "rider-003",
+      "name": "Simbarashe Mupfumira"
+    },
+    "assignedAt": "2026-08-30T09:30:00Z",
+    "pickedUpAt": "2026-08-30T10:00:00Z",
+    "deliveredAt": "2026-08-30T10:45:00Z",
+    "createdAt": "2026-08-30T08:00:00Z",
+    "updatedAt": "2026-08-30T10:45:00Z"
+  }
+]
